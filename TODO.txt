@@ -1,4 +1,6 @@
 Со звуком, так: если без заморочек, то: graker.ru/news/2010/02/10/qt_i_zvuki
+Только там команда play лажа, правильно так:
+QProcess::startDetached("aplay /home/maxim/lol3.wav");
 Если заморачиваться, то нужен либо Phonon, либо QMultimedia. Пока руки не дошли.
 
 С процессами пока хз, реально.
