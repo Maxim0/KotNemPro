@@ -1,0 +1,121 @@
+#include "dialog.h"
+#include <QDebug>
+#include <QLabel>
+
+Dialog::Dialog(QWidget *parent): QDialog(parent), sa(new QScrollArea), left(new QVBoxLayout), right(new QVBoxLayout),
+        main(new QHBoxLayout), plusButton(new QPushButton("+", this))
+{
+        setting = new QSettings("MyPro", "mysetting");
+
+        right->addWidget(plusButton);
+        main->addLayout(left); main->addLayout(right);
+        this->setLayout(main);
+
+        plusButton->setMinimumWidth(40);
+        connect(plusButton, SIGNAL(clicked()), this, SLOT(plusButtonClicked()));
+
+        sa->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        sa->setWidget(this);
+        this->setFixedSize(400, vertSize);
+        sa->resize(this->size() += QSize(20, 0));
+        sa->show();
+
+        LoadSettings();
+}
+
+Dialog::~Dialog() {delete left; delete right; delete main;}
+
+void Dialog::plusButtonClicked()
+{
+        this->setFixedSize(400, vertSize+=30);
+
+        static int count = 0;
+        QDateTime dt(QDate().currentDate(), QTime(0, 0, 0));
+        QHBoxLayout* hb = new QHBoxLayout;
+        QLabel* lbl = new QLabel("Удалить:");
+        QPushButton* btn = new QPushButton(QString().number(count++));
+
+
+        btn->setMinimumWidth(30);
+
+        dateTimeVec.push_back(new QDateTimeEdit(dt, this));
+
+        hb->addWidget(lbl);
+        hb->addWidget(btn);
+        hb->addWidget(dateTimeVec.back());
+
+        left->addLayout(hb);
+
+        connect((dateTimeVec.back()), SIGNAL(dateTimeChanged(const QDateTime&)), this, SLOT(changedDateTime(QDateTime)));
+
+        SaveSettings();
+}
+
+void Dialog::finishedEditing()
+{
+        qDebug() << "finishedEditing()";
+        SaveSettings();
+}
+
+void Dialog::changedDateTime(const QDateTime& dt)
+{
+        qDebug() << "changedDateTime(): " << dt;
+
+        ConvertToText();
+
+        SaveSettings();
+}
+
+void Dialog::SaveSettings()
+{
+        qDebug() << "Saving";
+        VecToString();
+
+        setting->beginGroup("Dialog");
+                setting->setValue("text", text);
+        setting->endGroup();
+}
+
+void Dialog::LoadSettings()
+{
+        setting->beginGroup("Dialog");
+                text = (setting->value("text").toString());
+                qDebug() << "Loading: " << text;
+        setting->endGroup();
+
+        LoadToDate();
+}
+
+void Dialog::ConvertToText()
+{
+        int size = dateTimeVec.size();
+        textVec.clear();
+        textVec.resize(size);
+
+        for(int i = 0; i < size; i++)
+                textVec[i] = dateTimeVec[i]->text();
+
+        qDebug() << "ConvertToText(): " << textVec;
+}
+
+void Dialog::VecToString()
+{
+        text.clear();
+        for(int i = 0; i < textVec.size(); i++)
+                text += (textVec[i] + "\n");
+}
+
+void Dialog::LoadToDate()
+{
+        QStringList s = text.split("\n");
+        qDebug() << "LoadToDate() " << s;
+        int size = s.size();
+
+//	qDebug() << "dte" << dte;
+
+        for(int i = 0; i < size; i++)
+        {
+                plusButtonClicked();
+        }
+}
+
