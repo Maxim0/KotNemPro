@@ -22,36 +22,36 @@ class Dialog : public QDialog//, public QApplication
 
 private:
 	QScrollArea*					sa;
-	QVector<QDateTimeEdit*>			dateTimeVec;
-	QVector<QPushButton*>			pushButtonVec;
+	QVector<QDateTimeEdit*>				dateTimeVec;
+	QVector<QPushButton*>				pushButtonVec;
 	QPushButton*					plusButton;
 	QVBoxLayout*					left;
 	QVBoxLayout*					right;
 	QHBoxLayout*					main;
-	QSettings*						setting;
-	QString							text;
+	QSettings*					setting;
+	QString						text;
 	QVector<QString>				textVec;
 	QSystemTrayIcon*				trayIcon;
-	QMenu*							trayMenu;
+	QMenu*						trayMenu;
 	QPushButton*					toTray;
-	int								vertSize = 300;
+	int						vertSize = 300;
 
-	void						SaveSettings();
-	void						LoadSettings();
-	void						keyPressEvent(QKeyEvent* k);
+	void					SaveSettings();
+	void					LoadSettings();
+	void					keyPressEvent(QKeyEvent* k);
 
 public:
 	Dialog(QWidget *parent = 0);
 	~Dialog();
 
 public slots:
-	void					addToTray();
-	void					plusButtonClicked();
-	void					deleteButtonClicked();
-	void					finishedEditing();
-	void					changedDateTime(const QDateTime&);
-	void					checkAlarms();
-	void					slotShowHide();
+	void				addToTray();
+	void				plusButtonClicked();
+	void				deleteButtonClicked();
+	void				finishedEditing();
+	void				changedDateTime(const QDateTime&);
+	void				checkAlarms();
+	void				slotShowHide();
 };
 
 #endif // DIALOG_H
