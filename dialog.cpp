@@ -6,7 +6,7 @@
 #include <QProcess>
 
 Dialog::Dialog(QWidget *parent): QDialog(parent), sa(new QScrollArea), left(new QVBoxLayout), right(new QVBoxLayout),
-	main(new QHBoxLayout), plusButton(new QPushButton("+", this))
+	main(new QHBoxLayout), plusButton(new QPushButton("+"/*, this*/))
 {
 	setting = new QSettings("MyPro", "mysetting");
 
@@ -34,7 +34,21 @@ Dialog::Dialog(QWidget *parent): QDialog(parent), sa(new QScrollArea), left(new 
 	connect(toTray, SIGNAL(clicked()), this, SLOT(addToTray()));
 }
 
-Dialog::~Dialog() {delete left; delete right; delete main;}
+Dialog::~Dialog()
+{
+	delete left; delete right; delete main;
+	delete sa;
+
+	for(int i = 0; i < dateTimeVec.size(); i++)
+		delete dateTimeVec[i];		dateTimeVec.clear();
+	for(int i = 0; i < pushButtonVec.size(); i++)
+		delete pushButtonVec[i];	pushButtonVec.clear();
+
+	delete plusButton;
+	delete setting;
+	delete trayIcon;
+	delete trayMenu;
+}
 
 void Dialog::plusButtonClicked()
 {
